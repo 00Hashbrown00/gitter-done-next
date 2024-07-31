@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Repo Evaluator</title>
+    <title>MeCV.ai</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         #terminal {
@@ -28,6 +28,19 @@
             }
             to {
                 width: 100%;
+            }
+        }
+
+        .blinking {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            from, to {
+                visibility: hidden;
+            }
+            50% {
+                visibility: visible;
             }
         }
     </style>
@@ -65,7 +78,9 @@
                 </div>
                 <button type="submit" class="w-full bg-black text-white py-2 px-4 rounded-md shadow-sm hover:bg-black">Evaluate</button>
             </form>
-            <div id="terminal" class="bg-black text-green-300 p-4 mt-6 rounded-md h-48 overflow-auto font-mono"></div>
+            <div id="terminal" class="bg-black text-green-300 p-4 mt-6 rounded-md h-48 overflow-auto font-mono">
+                <span class="blinking">.</span>
+            </div>
             <div id="results" class="mt-6"></div>
         </div>
     </div>
@@ -112,7 +127,6 @@
             'asyncio': 'bg-purple-400',
             'TensorFlow': 'bg-orange-400',
             'PyTorch': 'bg-pink-400',
-            // Add more features and their colors as needed
         };
 
         const proficiencyColors = {
@@ -146,6 +160,8 @@
                     terminalDiv.scrollTop = terminalDiv.scrollHeight;
                 }, index * 2000);
             });
+
+ 
 
             try {
                 const response = await fetch(`/api/evaluate?owner=${username}&repo=${repo}&language=${language}`);
@@ -189,6 +205,15 @@
                     terminalDiv.scrollTop = terminalDiv.scrollHeight;
                 }, terminalLines.length * 2000);
             }
+        });
+
+        // Add blinking period on page load
+        window.addEventListener('load', () => {
+            const terminalDiv = document.getElementById('terminal');
+            const blinkingPeriod = document.createElement('span');
+            blinkingPeriod.className = 'blinking';
+            blinkingPeriod.textContent = '.';
+            terminalDiv.appendChild(blinkingPeriod);
         });
     </script>
 </body>
